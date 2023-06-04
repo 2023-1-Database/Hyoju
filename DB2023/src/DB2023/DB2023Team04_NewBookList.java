@@ -20,24 +20,24 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import java.awt.Font;
 
 
-
-public class NewBookList extends JFrame{
+public class DB2023Team04_NewBookList extends JFrame{
         public String id;//사용자 아이디
         
     	Object[][] data = new Object[][] {};//창에서 출력할 신권 신청 테이블 정보
     	public ResultSet rset;// 테이블 객체
-    	DefaultTableModel Model = new DefaultTableModel(data,new String[] {"신청 번호","책 이름","저자","출판사","신청 상태","신청한 회원"});
+    	DefaultTableModel Model = new DefaultTableModel(data,new String[] {"책 이름","저자","출판사","신청 상태","신청한 회원"});
     	
     	//신권 신청 창 ,  닫는 버튼
     	JTable ltable=new JTable(Model);
     	JScrollPane jScrollPane=new JScrollPane(ltable);
     	JButton close=new JButton("close");
 
-        public NewBookList(String uid) {
+        public DB2023Team04_NewBookList(String uid) {
         	id= uid;//id에 사용자 아이디 저장
-        	setTitle("신권 신청 페이지");//창 이름
+        	setTitle("신권 신청");//창 이름
         	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         	//패널
         	Container contentPane = getContentPane();
@@ -48,7 +48,8 @@ public class NewBookList extends JFrame{
         	
         	//라벨
         	JLabel newLabel = new JLabel("신권 신청 목록");
-        	
+        	Font labelFont = newLabel.getFont();
+        	newLabel.setFont(new Font(labelFont.getFontName(), Font.BOLD, 32)); // 폰트 크기를 24로 설정
         	
         	//신권 신청하기 올리기 버튼
         	JButton newReq= new JButton("신권 신청하기");
@@ -61,20 +62,20 @@ public class NewBookList extends JFrame{
         	Panel3.add(newReq);
         	Panel3.add(close);
   
-        	DB2023_JDBC_Home db= new DB2023_JDBC_Home(); 
+        	DB2023Team04_JDBC db= new DB2023Team04_JDBC(); 
         	//신권 신청 목록 
     		try {//창에서 분실물 물품 리스트를 출력하기 위한 쿼리
     			
     			
-    			Statement stmt = db.conn.createStatement();
-    			rset = stmt.executeQuery("select * from DB2023_new_req");//모든 분실물 목록 출력
+    			Statement stmt = db.connection.createStatement();
+    			rset = stmt.executeQuery("select Book_Title, Author,Publisher,Req_Status, Member_ID from DB2023_new_req");//모든 분실물 목록 출력
     			
-    			String[] columns=new String[] {"신청 번호","책 이름","저자","출판사","신청 상태","신청한 회원"};
+    			String[] columns=new String[] {"책 이름","저자","출판사","신청 상태","신청한 회원"};
     			Object[][] data=new Object[][] {};
     					
     					
     			while(rset.next()) {//테이블에 신권 신청 리스트 넣기
-   		        Model.insertRow(0, new Object[] {rset.getInt("Req_Num"),rset.getString("Book_Title"),rset.getString("Author"),rset.getString("Publisher"),rset.getString("Req_Status"),rset.getString("Member_ID")," "});
+   		        Model.insertRow(0, new Object[] {rset.getString("Book_Title"),rset.getString("Author"),rset.getString("Publisher"),rset.getString("Req_Status"),rset.getString("Member_ID")," "});
     			}
 
     			JScrollPane scroll=new JScrollPane(ltable);
@@ -122,7 +123,7 @@ public class NewBookList extends JFrame{
     			if(bt.getText().equals("신권 신청하기")) {
     				System.out.println("신권 신청하기");
     				// 분실물 글 올리는창 이동
-    				//new RequestNewBook(id);//신권 신청 버튼 누르면 새로운 글 올리는 창 생성
+    				new DB2023Team04_RequestNewBook(id);//신권 신청 버튼 누르면 새로운 글 올리는 창 생성
     				dispose();//원래 창 닫기
     			}
             }

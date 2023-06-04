@@ -1,16 +1,20 @@
 package DB2023;
+
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 import javax.swing.*;
 
-class MainFrame extends JFrame{
-	public MainFrame() {
+//공통된 부분 프레임
+class DB2023Team04_MainFrame extends JFrame{
+	public DB2023Team04_MainFrame() {
 		setSize(1000,750);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setTitle("DB2023Team04");
 		setLayout(new BorderLayout());
 		
-		//header 부분 (홈 화면으로 되돌아가는 버튼)
+		//header 부분 (타이틀, 홈 화면으로 되돌아가는 버튼)
 		JPanel header = new JPanel();
 		header.setLayout(new FlowLayout());
 		header.setBorder(BorderFactory.createEmptyBorder(10 , 0 , 0 , 0));
@@ -48,15 +52,22 @@ class MainFrame extends JFrame{
 		button.setPreferredSize(new Dimension(150,50));
 		panel.add(button);
 	}
+	public static void BookButton(JPanel panel, String string, String id) {
+		JButton button = new JButton(string);
+		button.setPreferredSize(new Dimension(700,50));
+		button.putClientProperty("Book_ID", id);
+		panel.add(button);
+	}
 }
 
-class HomeFrame extends MainFrame{
+//홈 화면 프레임
+class DB2023Team04_HomeFrame extends DB2023Team04_MainFrame{
 	JRadioButton RBCallnum = new JRadioButton("분류 기호");
 	JRadioButton RBAuthor = new JRadioButton("작가");
 	JRadioButton RBTitle = new JRadioButton("제목", true);
 	ButtonGroup radioGroup = new ButtonGroup();
 	
-	public HomeFrame() {
+	public DB2023Team04_HomeFrame() {
 		super();
 		setTitle("DB2023Team04_Home");
 		
@@ -99,24 +110,17 @@ class HomeFrame extends MainFrame{
 		recomLabel.setFont(new Font("맑은 고딕", Font.BOLD, 20));
 		recomLabel.setPreferredSize(new Dimension(700,50));
 		recommend.add(recomLabel);
-		recommendButton(recommend, "책1");
-		recommendButton(recommend, "책2");
-		recommendButton(recommend, "책3");
-		recommendButton(recommend, "책4");
-		recommendButton(recommend, "책5");
+		BookButton(recommend, "책1", "001");
+		BookButton(recommend, "책2", "002");
+		BookButton(recommend, "책3", "003");
+		BookButton(recommend, "책4", "004");
+		BookButton(recommend, "책5", "005");
 		
 		body.add(searchArea, BorderLayout.NORTH);
 		body.add(recommend, BorderLayout.CENTER);
 		
 		super.add(body, BorderLayout.CENTER);
 	}
-	
-	public void recommendButton(JPanel panel, String string) {
-		JButton button = new JButton(string);
-		button.setPreferredSize(new Dimension(700,50));
-		panel.add(button);
-	}
-
 
 	class SearchListener implements ActionListener{
 		JTextField text;
@@ -133,17 +137,43 @@ class HomeFrame extends MainFrame{
 				target = "Author";
 			else if (RBTitle.isSelected())
 				target = "Book_Title";
-			DB2023_JDBC_Home.DB2023_JDBC_search(target, text.getText());
+			DB2023Team04_JDBC.DB2023_JDBC_search(target, text.getText());
 			text.setText("");
 			System.out.println("actionPerformed: Search " + target);
+
 		}
 	}
 }
 
-public class Home {
+//검색 결과 프레임
+class DB2023Team04_SearchResultFrame extends DB2023Team04_MainFrame{
+	public static JPanel searchbody = new JPanel();
+	public DB2023Team04_SearchResultFrame() {
+		super();
+		setTitle("DB2023Team04_SearchResult");
+		
+		searchbody.setLayout(new FlowLayout(FlowLayout.LEFT));
+		searchbody.setBorder(BorderFactory.createEmptyBorder(30 , 5 , 0 , 45));
+		
+		JLabel resultcondition = new JLabel("검색 결과 : 로 검색한 결과입니다.");
+		searchbody.add(resultcondition);
+		resultcondition.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+		resultcondition.setPreferredSize(new Dimension(700,60));
+		BookButton(searchbody, "검색 결과 책", "001");
+		
+		super.add(searchbody);
+		
+	}
+	
+}
+
+public class DB2023Team04_Home {
 
 	public static void main(String[] args) {
-		HomeFrame home = new HomeFrame();
+		DB2023Team04_JDBC jdbc = new DB2023Team04_JDBC();
+		DB2023Team04_HomeFrame home = new DB2023Team04_HomeFrame();
+		//DB2023Team04_SearchResultFrame searchResultFrame = new DB2023Team04_SearchResultFrame();
+		
 	}
 
 }

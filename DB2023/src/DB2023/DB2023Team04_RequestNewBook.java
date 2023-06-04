@@ -6,28 +6,32 @@ import java.sql.*;
 
 import javax.swing.*;
 
-public class RequestNewBook extends JFrame {
+public class DB2023Team04_RequestNewBook extends JFrame {
 	public String id;
-	public RequestNewBook(String uid) {
+	public DB2023Team04_RequestNewBook(String uid) {
 		id = uid;
 		setTitle("신권 신청하기");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		Container contentPane = getContentPane();
-		contentPane.setLayout(new FlowLayout());
+		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 30, 30));
 		JPanel northPanel = new JPanel();
-		JPanel centerPanel = new JPanel();
+		JPanel center1Panel = new JPanel();
+		JPanel center2Panel = new JPanel();
+		//버튼 붙을 패널
+		JPanel bottomPanel = new JPanel();
+		bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 		
 		// 라벨
 		JLabel titleL = new JLabel("책 제목");
-		JLabel authorL = new JLabel("저자");
+		JLabel authorL = new JLabel(" 저자 ");
 		JLabel publisherL = new JLabel("출판사");
 		
 		
 		// 텍스트필드
 		JTextField title = new JTextField();
-		JTextArea author = new JTextArea();
-		JTextArea publisher = new JTextArea();
+		JTextField author = new JTextField();
+		JTextField publisher = new JTextField();
 		
 		//신권 신청 버튼
 		JButton newbtn = new JButton("신권 신청하기");
@@ -41,21 +45,25 @@ public class RequestNewBook extends JFrame {
 		// 패널에 라벨, 텍스트 필드 붙이기
 		northPanel.add(titleL);
 		northPanel.add(title);
-		centerPanel.add(authorL);
-		centerPanel.add(author);
-		centerPanel.add(publisherL);
-		centerPanel.add(publisher);
+		center1Panel.add(authorL);
+		center1Panel.add(author);
+		center2Panel.add(publisherL);
+		center2Panel.add(publisher);
+		bottomPanel.add(newbtn);
+		bottomPanel.add(cancel);
+		
 		
 		// 컨텐트팬에 패널, 버튼 붙이기
 		contentPane.add(northPanel);
-		contentPane.add(centerPanel);
-		contentPane.add(newbtn);
-		contentPane.add(cancel);
+		contentPane.add(center1Panel);
+		contentPane.add(center2Panel);
+		contentPane.add(bottomPanel);
+		
 		
 		// insert 하기 위한 쿼리문
 		String sql = "insert into DB2023_new_req values (?,?,?,?,?,?)";
 		//Database 클래스
-		//Database db = new Database();
+		DB2023Team04_JDBC db= new DB2023Team04_JDBC(); 
 		
 		// 액션 리스너
 		newbtn.addActionListener(new ActionListener() {
@@ -68,10 +76,10 @@ public class RequestNewBook extends JFrame {
 						; // 사용자가 "예", "아니오"의 선택 없이 다이얼로그 창을 닫은 경우
 					else if(result == JOptionPane.YES_OPTION) {
 						try { // ps에 값 저장
-							db.con.setAutoCommit(false);
-							PreparedStatement ps = db.con.prepareStatement(sql);
-							Statement stmt = db.con.createStatement();
-							ResultSet rset = stmt.executeQuery("select max(item_num) from db2022_items_lost");
+							db.connection.setAutoCommit(false);
+							PreparedStatement ps = db.connection.prepareStatement(sql);
+							Statement stmt = db.connection.createStatement();
+							ResultSet rset = stmt.executeQuery("select max(Req_num) from DB2023_new_req");
 							while(rset.next()) {
 								ps.setInt(1, (rset.getInt(1)+1));
 							}
@@ -81,20 +89,20 @@ public class RequestNewBook extends JFrame {
 							ps.setString(5, "신청접수");
 							ps.setString(6,id );
 							ps.executeUpdate();
-							db.con.commit();
+							db.connection.commit();
 							System.out.println("등록 완료");
-							db.con.setAutoCommit(true);
+							db.connection.setAutoCommit(true);
 							System.out.println("setAutoCommit = true");
 						}catch(SQLException e1) {
 							e1.printStackTrace();
 							try {
-								if(db.con!=null)
-									db.con.rollback();
+								if(db.connection!=null)
+									db.connection.rollback();
 							}catch(SQLException se) {
 								se.printStackTrace();
 							}
 						}
-						new items_lost(id);
+						new DB2023Team04_NewBookList(id);
 						dispose();
 					}// 사용자가 "예"를 선택한 경우
 					else 
@@ -119,7 +127,7 @@ public class RequestNewBook extends JFrame {
 			JButton b = (JButton)e.getSource();
 			if(b.getText().equals("취소")){
 				System.out.println("신권 신청을 취소합니다");
-				new Home(id);
+				new DB2023Team04_NewBookList(id);
 				dispose();
 			}
 
