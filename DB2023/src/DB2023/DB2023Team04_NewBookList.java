@@ -31,8 +31,8 @@ public class DB2023Team04_NewBookList extends JFrame{
     	DefaultTableModel Model = new DefaultTableModel(data,new String[] {"책 이름","저자","출판사","신청 상태","신청한 회원"});
     	
     	//신권 신청 창 ,  닫는 버튼
-    	JTable ltable=new JTable(Model);
-    	JScrollPane jScrollPane=new JScrollPane(ltable);
+    	JTable ltable=new JTable(Model); 
+    	JScrollPane jScrollPane=new JScrollPane(ltable);// 스크롤
     	JButton close=new JButton("close");
 
         public DB2023Team04_NewBookList(String uid) {
@@ -64,7 +64,7 @@ public class DB2023Team04_NewBookList extends JFrame{
   
         	DB2023Team04_JDBC db= new DB2023Team04_JDBC(); 
         	//신권 신청 목록 
-    		try {//창에서 분실물 물품 리스트를 출력하기 위한 쿼리
+    		try {//창에서 신권신청 목록을 출력하기 위한 쿼리
     			
     			
     			Statement stmt = db.connection.createStatement();
@@ -96,9 +96,8 @@ public class DB2023Team04_NewBookList extends JFrame{
             //무료나눔 글쓰기 버튼
             newReq.addActionListener(reg);
         	
-        	// 액션 리스너
         	
-        	// 닫기
+        	// 신권 신청 페이지 닫기
         	close.addActionListener(new ActionListener() {
         		@Override
         		public void actionPerformed(ActionEvent e) {
